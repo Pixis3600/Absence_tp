@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
+use Silber\Bouncer\Database\Role;
 use Tests\TestCase;
 
 class UserRoleManagementTest extends TestCase
@@ -14,6 +15,9 @@ class UserRoleManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Role::query()->firstOrCreate(['name' => 'admin']);
+        Role::query()->firstOrCreate(['name' => 'salarie']);
 
         Bouncer::allow('admin')->to('user-view-all');
         Bouncer::allow('admin')->to('user-create');

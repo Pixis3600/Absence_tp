@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use Silber\Bouncer\Database\Role;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UserController extends Controller
 {
-    private const ROLES = ['admin', 'salarie'];
-
     public function index()
     {
         $users = User::with('roles')->latest()->get();
@@ -21,7 +20,7 @@ class UserController extends Controller
     public function create()
     {
         return view('users.create', [
-            'roles' => self::ROLES,
+            'roles' => $this->availableRoles(),
         ]);
     }
 
@@ -48,7 +47,7 @@ class UserController extends Controller
 
         return view('users.edit', [
             'user' => $user,
-            'roles' => self::ROLES,
+            'roles' => $this->availableRoles(),
         ]);
     }
 
@@ -85,5 +84,10 @@ class UserController extends Controller
         $user->load(['absences', 'roles']);
 
         return view('users.show', compact('user'));
+    }
+
+    private function availableRoles(): array
+    {
+        return Role::query()->orderBy('name')->pluck('name')->all();
     }
 }

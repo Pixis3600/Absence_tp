@@ -23,6 +23,7 @@
                 @auth
                     @can('user-view-all')
                         <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+                        <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
                     @endcan
 
                     <form method="POST" action="{{ route('logout') }}" class="ms-3 mb-0">

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Silber\Bouncer\Database\Models;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -20,7 +22,7 @@ class UserUpdateRequest extends FormRequest
             'lastname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'email' => ['required', 'email', 'unique:users,email,' . $userId],
             'password' => ['nullable', 'string', 'min:6'],
-            'role' => ['required', 'in:admin,salarie'],
+            'role' => ['required', Rule::exists(Models::table('roles'), 'name')],
         ];
     }
 

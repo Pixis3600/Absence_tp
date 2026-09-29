@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Silber\Bouncer\Database\Models;
 
 class UserStoreRequest extends FormRequest
 {
@@ -18,7 +20,7 @@ class UserStoreRequest extends FormRequest
             'lastname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
-            'role' => ['required', 'in:admin,salarie'],
+            'role' => ['required', Rule::exists(Models::table('roles'), 'name')],
         ];
     }
 
