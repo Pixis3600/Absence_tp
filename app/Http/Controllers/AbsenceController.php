@@ -10,16 +10,43 @@ use Illuminate\Support\Facades\Auth;
 
 class AbsenceController extends Controller
 {
-    protected function isAdmin(): bool
+    protected function canViewAllAbsences(): bool
     {
-        return Auth::check() && Auth::user()->is_admin;
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user?->can('absence-view-all') ?? false;
+    }
+
+    protected function canEditAnyAbsence(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user?->can('absence-edit-all') ?? false;
+    }
+
+    protected function canDeleteAnyAbsence(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user?->can('absence-delete-all') ?? false;
+    }
+
+    protected function canReviewAbsence(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user?->can('absence-review') ?? false;
     }
 
     protected function authorizeOwnAbsence(Absence $absence): void
     {
         $status = $absence->status ?? 'en_attente';
 
-        if ($this->isAdmin()) {
+        if ($this->canEditAnyAbsence()) {
             return;
         }
 
@@ -36,7 +63,7 @@ class AbsenceController extends Controller
     {
         $query = Absence::with('user')->latest();
 
-        if (!$this->isAdmin()) {
+        if (!$this->canViewAllAbsences()) {
             $query->where('user_id', Auth::id());
         }
 
@@ -47,7 +74,7 @@ class AbsenceController extends Controller
 
     public function create()
     {
-        $users = $this->isAdmin() ? User::orderBy('name')->get() : collect([Auth::user()]);
+        $users = $this->canViewAllAbsences() ? User::orderBy('name')->get() : collect([Auth::user()]);
 
         return view('absences.create', compact('users'));
     }
@@ -56,7 +83,7 @@ class AbsenceController extends Controller
     {
         $validated = $request->validated();
 
-        if (!$this->isAdmin()) {
+        if (!$this->canViewAllAbsences()) {
             $validated['user_id'] = Auth::id();
         }
 
@@ -69,7 +96,7 @@ class AbsenceController extends Controller
     {
         $this->authorizeOwnAbsence($absence);
 
-        $users = $this->isAdmin() ? User::orderBy('name')->get() : collect([Auth::user()]);
+        $users = $this->canViewAllAbsences() ? User::orderBy('name')->get() : collect([Auth::user()]);
 
         return view('absences.edit', compact('absence', 'users'));
     }
@@ -80,7 +107,7 @@ class AbsenceController extends Controller
 
         $validated = $request->validated();
 
-        if (!$this->isAdmin()) {
+        if (!$this->canEditAnyAbsence()) {
             $validated['user_id'] = Auth::id();
         }
 
@@ -91,7 +118,9 @@ class AbsenceController extends Controller
 
     public function destroy(Absence $absence)
     {
-        $this->authorizeOwnAbsence($absence);
+        if (!$this->canDeleteAnyAbsence()) {
+            $this->authorizeOwnAbsence($absence);
+        }
 
         $absence->delete();
 
@@ -100,7 +129,7 @@ class AbsenceController extends Controller
 
     public function accept(Absence $absence)
     {
-        if (!$this->isAdmin()) {
+        if (!$this->canReviewAbsence()) {
             abort(403, 'Seuls les administrateurs peuvent valider une absence.');
         }
 
@@ -111,7 +140,7 @@ class AbsenceController extends Controller
 
     public function reject(Absence $absence)
     {
-        if (!$this->isAdmin()) {
+        if (!$this->canReviewAbsence()) {
             abort(403, 'Seuls les administrateurs peuvent refuser une absence.');
         }
 

@@ -14,6 +14,7 @@
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Email</th>
+                <th>Rôle</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,6 +24,7 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->lastname }}</td>
                     <td>{{ $user->email }}</td>
+                    <td>{{ $user->roles->first()?->name ?? 'Aucun' }}</td>
                     <td>
                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Modifier</a>
 

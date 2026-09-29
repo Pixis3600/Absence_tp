@@ -28,6 +28,20 @@
             <input type="password" name="password" class="form-control">
         </div>
 
+        <div class="mb-3">
+            <label for="role">Rôle</label>
+            <select name="role" class="form-control" required>
+                @foreach ($roles as $role)
+                    <option value="{{ $role }}" @selected(old('role', $user->roles->first()?->name ?? 'salarie') === $role)>
+                        {{ ucfirst($role) }}
+                    </option>
+                @endforeach
+            </select>
+            @error('role')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </form>
 </div>

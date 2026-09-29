@@ -21,9 +21,9 @@
                 <a class="nav-link" href="{{ route('absences.index') }}">Absences</a>
 
                 @auth
-                    @if(Auth::user()->is_admin)
+                    @can('user-view-all')
                         <a class="nav-link" href="{{ route('users.index') }}">Users</a>
-                    @endif
+                    @endcan
 
                     <form method="POST" action="{{ route('logout') }}" class="ms-3 mb-0">
                         @csrf
@@ -31,7 +31,6 @@
                     </form>
                 @else
                     <a class="nav-link" href="{{ route('login') }}">Connexion</a>
-                    <a class="nav-link" href="{{ route('register') }}">Inscription</a>
                 @endauth
             </div>
         </div>

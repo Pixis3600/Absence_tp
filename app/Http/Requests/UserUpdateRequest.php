@@ -8,7 +8,7 @@ class UserUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('user-view-all') ?? false;
     }
 
     public function rules(): array
@@ -20,6 +20,7 @@ class UserUpdateRequest extends FormRequest
             'lastname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'email' => ['required', 'email', 'unique:users,email,' . $userId],
             'password' => ['nullable', 'string', 'min:6'],
+            'role' => ['required', 'in:admin,salarie'],
         ];
     }
 
@@ -34,6 +35,8 @@ class UserUpdateRequest extends FormRequest
             'email.email' => 'L’email doit être dans un format valide.',
             'email.unique' => 'Cet email est déjà utilisé.',
             'password.min' => 'Le mot de passe doit contenir au moins 6 caractères.',
+            'role.required' => 'Le rôle est obligatoire.',
+            'role.in' => 'Le rôle sélectionné est invalide.',
         ];
     }
 }

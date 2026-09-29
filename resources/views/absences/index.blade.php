@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    $isAdmin = Auth::check() && Auth::user()->is_admin;
+    $canManageAllAbsences = Auth::check() && Auth::user()->can('absence-view-all');
 @endphp
 <div class="container mt-4">
     <h2>Liste des absences</h2>
@@ -51,7 +51,7 @@
                             <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
                         </td>
                         <td>
-                            @if($isAdmin && (($absence->status ?? 'en_attente') === 'en_attente'))
+                            @if($canManageAllAbsences && (($absence->status ?? 'en_attente') === 'en_attente'))
                                 <form action="{{ route('absences.accept', $absence->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">Accepter</button>
@@ -61,13 +61,13 @@
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm">Refuser</button>
                                 </form>
-                            @elseif(! $isAdmin && $absence->status !== 'accepte' && $absence->status !== 'refuse')
+                            @elseif(! $canManageAllAbsences && $absence->status !== 'accepte' && $absence->status !== 'refuse')
                                 <span class="text-muted">En attente</span>
                             @else
                                 <span class="text-muted">Traitée</span>
                             @endif
 
-                            @if($isAdmin || $isOwner)
+                            @if($canManageAllAbsences || $isOwner)
                                 <a href="{{ route('absences.edit', $absence->id) }}" class="btn btn-warning btn-sm ms-1">
                                     Modifier
                                 </a>

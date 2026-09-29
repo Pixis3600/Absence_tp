@@ -8,7 +8,7 @@ class UserStoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('user-view-all') ?? false;
     }
 
     public function rules(): array
@@ -18,6 +18,7 @@ class UserStoreRequest extends FormRequest
             'lastname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
+            'role' => ['required', 'in:admin,salarie'],
         ];
     }
 
@@ -33,6 +34,8 @@ class UserStoreRequest extends FormRequest
             'email.unique' => 'Cet email est déjà utilisé.',
             'password.required' => 'Le mot de passe est obligatoire.',
             'password.min' => 'Le mot de passe doit contenir au moins 6 caractères.',
+            'role.required' => 'Le rôle est obligatoire.',
+            'role.in' => 'Le rôle sélectionné est invalide.',
         ];
     }
 }

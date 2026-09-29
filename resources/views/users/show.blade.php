@@ -12,6 +12,7 @@
     <p><strong>Prénom :</strong> {{ $user->name }}</p>
     <p><strong>Nom :</strong> {{ $user->lastname }}</p>
     <p><strong>Email :</strong> {{ $user->email }}</p>
+    <p><strong>Rôle :</strong> {{ $user->roles->first()?->name ?? 'Aucun' }}</p>
 
     <h2>Liste des absences</h2>
 

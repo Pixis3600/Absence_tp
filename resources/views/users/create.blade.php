@@ -39,6 +39,21 @@
             @enderror
         </div>
 
+        <div class="mb-3">
+            <label for="role">Rôle</label>
+            <select name="role" class="form-control" required>
+                <option value="">Choisir un rôle</option>
+                @foreach ($roles as $role)
+                    <option value="{{ $role }}" @selected(old('role', 'salarie') === $role)>
+                        {{ ucfirst($role) }}
+                    </option>
+                @endforeach
+            </select>
+            @error('role')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
         <button type="submit" class="btn btn-primary">Valider</button>
     </form>
 </div>
