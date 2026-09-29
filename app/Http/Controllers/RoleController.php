@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleStoreRequest;
 use App\Http\Requests\RoleUpdateRequest;
+use App\Repositories\RoleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Silber\Bouncer\Database\Ability;
@@ -11,6 +12,10 @@ use Silber\Bouncer\Database\Role;
 
 class RoleController extends Controller
 {
+    public function __construct(private readonly RoleRepository $repository)
+    {
+    }
+
     public function index(): View
     {
         $roles = Role::query()
@@ -37,16 +42,7 @@ class RoleController extends Controller
     {
         $validated = $request->validated();
 
-        $role = Role::query()->create([
-            'name' => $validated['name'],
-        ]);
-
-        $abilityIds = $this->resolveAbilityIds(
-            $validated['abilities'] ?? [],
-            $validated['new_abilities'] ?? null
-        );
-
-        $role->abilities()->sync($abilityIds);
+        $this->repository->store($validated);
 
         return redirect()->route('roles.index')->with('success', 'Rôle créé avec succès.');
     }
@@ -68,57 +64,15 @@ class RoleController extends Controller
     {
         $validated = $request->validated();
 
-        $role->name = $validated['name'];
-        $role->save();
-
-        $abilityIds = $this->resolveAbilityIds(
-            $validated['abilities'] ?? [],
-            $validated['new_abilities'] ?? null
-        );
-
-        $role->abilities()->sync($abilityIds);
+        $this->repository->update($role, $validated);
 
         return redirect()->route('roles.index')->with('success', 'Rôle modifié avec succès.');
     }
 
     public function destroy(Role $role): RedirectResponse
     {
-        $role->users()->detach();
-        $role->abilities()->detach();
-        $role->delete();
+        $this->repository->destroy($role);
 
         return redirect()->route('roles.index')->with('success', 'Rôle supprimé avec succès.');
-    }
-
-    /**
-     * @param  int[]  $selectedAbilityIds
-     */
-    private function resolveAbilityIds(array $selectedAbilityIds, ?string $newAbilities): array
-    {
-        $abilityIds = $selectedAbilityIds;
-
-        if ($newAbilities) {
-            $names = collect(explode(',', $newAbilities))
-                ->map(fn ($ability) => trim($ability))
-                ->filter()
-                ->unique();
-
-            foreach ($names as $name) {
-                $ability = Ability::query()->firstOrCreate([
-                    'name' => $name,
-                    'entity_id' => null,
-                    'entity_type' => null,
-                ], [
-                    'title' => $name,
-                    'only_owned' => false,
-                    'options' => null,
-                    'scope' => null,
-                ]);
-
-                $abilityIds[] = $ability->id;
-            }
-        }
-
-        return array_values(array_unique(array_map('intval', $abilityIds)));
     }
 }

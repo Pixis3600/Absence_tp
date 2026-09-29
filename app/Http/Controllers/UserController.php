@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Silber\Bouncer\Database\Role;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UserController extends Controller
 {
+    public function __construct(private readonly UserRepository $repository)
+    {
+    }
+
     public function index()
     {
         $users = User::with('roles')->latest()->get();
@@ -28,15 +32,7 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'lastname' => $validated['lastname'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-        ]);
-
-        Bouncer::assign($validated['role'])->to($user);
-        Bouncer::refresh($user);
+        $this->repository->store($validated);
 
         return redirect()->route('users.index')->with('success', 'Employé ajouté avec succès.');
     }
@@ -55,19 +51,7 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $user->name = $validated['name'];
-        $user->lastname = $validated['lastname'];
-        $user->email = $validated['email'];
-
-        if (!empty($validated['password'])) {
-            $user->password = bcrypt($validated['password']);
-        }
-
-        $user->save();
-
-        Bouncer::retract($user->getRoles())->from($user);
-        Bouncer::assign($validated['role'])->to($user);
-        Bouncer::refresh($user);
+        $this->repository->update($user, $validated);
 
         return redirect()->route('users.index')->with('success', 'Employé modifié avec succès.');
     }

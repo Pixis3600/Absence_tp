@@ -6,10 +6,15 @@ use App\Http\Requests\AbsenceStoreRequest;
 use App\Http\Requests\AbsenceUpdateRequest;
 use App\Models\Absence;
 use App\Models\User;
+use App\Repositories\AbsenceRepository;
 use Illuminate\Support\Facades\Auth;
 
 class AbsenceController extends Controller
 {
+    public function __construct(private readonly AbsenceRepository $repository)
+    {
+    }
+
     protected function canViewAllAbsences(): bool
     {
         /** @var User|null $user */
@@ -87,7 +92,7 @@ class AbsenceController extends Controller
             $validated['user_id'] = Auth::id();
         }
 
-        Absence::create($validated);
+        $this->repository->store($validated);
 
         return redirect()->route('absences.index')->with('success', 'Absence ajoutée avec succès.');
     }
@@ -111,7 +116,7 @@ class AbsenceController extends Controller
             $validated['user_id'] = Auth::id();
         }
 
-        $absence->update($validated);
+        $this->repository->update($absence, $validated);
 
         return redirect()->route('absences.index')->with('success', 'Absence modifiée avec succès.');
     }
@@ -122,7 +127,7 @@ class AbsenceController extends Controller
             $this->authorizeOwnAbsence($absence);
         }
 
-        $absence->delete();
+        $this->repository->delete($absence);
 
         return redirect()->route('absences.index')->with('success', 'Absence supprimée.');
     }
@@ -133,7 +138,7 @@ class AbsenceController extends Controller
             abort(403, 'Seuls les administrateurs peuvent valider une absence.');
         }
 
-        $absence->update(['status' => 'accepte']);
+        $this->repository->setStatus($absence, 'accepte');
 
         return redirect()->route('absences.index')->with('success', 'L\'absence a été acceptée.');
     }
@@ -144,7 +149,7 @@ class AbsenceController extends Controller
             abort(403, 'Seuls les administrateurs peuvent refuser une absence.');
         }
 
-        $absence->update(['status' => 'refuse']);
+        $this->repository->setStatus($absence, 'refuse');
 
         return redirect()->route('absences.index')->with('success', 'L\'absence a été refusée.');
     }
