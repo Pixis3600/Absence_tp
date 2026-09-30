@@ -2,14 +2,14 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>Modifier le rôle {{ $role->name }}</h2>
+    <h2>{{ __('Modifier le rôle') }} {{ $role->name }}</h2>
 
     <form action="{{ route('roles.update', $role) }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="mb-3">
-            <label for="name">Nom du rôle</label>
+            <label for="name">{{ __('Nom du rôle') }}</label>
             <input type="text" name="name" class="form-control" value="{{ old('name', $role->name) }}" required>
             @error('name')
                 <div class="text-danger">{{ $message }}</div>
@@ -17,9 +17,9 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Autorisations existantes</label>
+            <label class="form-label">{{ __('Autorisations existantes') }}</label>
             @if($abilities->isEmpty())
-                <p class="text-muted">Aucune autorisation existante.</p>
+                <p class="text-muted">{{ __('Aucune autorisation existante.') }}</p>
             @else
                 <div class="row">
                     @foreach($abilities as $ability)
@@ -47,7 +47,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="new_abilities">Ajouter de nouvelles autorisations</label>
+            <label for="new_abilities">{{ __('Ajouter de nouvelles autorisations') }}</label>
             <input
                 type="text"
                 name="new_abilities"
@@ -55,14 +55,14 @@
                 value="{{ old('new_abilities') }}"
                 placeholder="ex: role-manage, report-export"
             >
-            <small class="text-muted">Sépare les noms par des virgules.</small>
+            <small class="text-muted">{{ __('Sépare les noms par des virgules.') }}</small>
             @error('new_abilities')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{{ route('roles.index') }}" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-primary">{{ __('Enregistrer') }}</button>
+        <a href="{{ route('roles.index') }}" class="btn btn-secondary">{{ __('Annuler') }}</a>
     </form>
 </div>
 @endsection

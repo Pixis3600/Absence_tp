@@ -1,31 +1,31 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Absences du salarié</title>
+    <title>{{ __('Absences du salarié') }}</title>
 </head>
 <body>
-    <h1>Absences du salarié</h1>
+    <h1>{{ __('Absences du salarié') }}</h1>
 
     <p><strong>ID :</strong> {{ $user->id }}</p>
-    <p><strong>Prénom :</strong> {{ $user->name }}</p>
-    <p><strong>Nom :</strong> {{ $user->lastname }}</p>
-    <p><strong>Email :</strong> {{ $user->email }}</p>
-    <p><strong>Rôle :</strong> {{ $user->roles->first()?->name ?? 'Aucun' }}</p>
+    <p><strong>{{ __('Prénom') }} :</strong> {{ $user->name }}</p>
+    <p><strong>{{ __('Nom') }} :</strong> {{ $user->lastname }}</p>
+    <p><strong>{{ __('Email') }} :</strong> {{ $user->email }}</p>
+    <p><strong>{{ __('Rôle') }} :</strong> {{ $user->roles->first()?->name ?? __('Aucun') }}</p>
 
-    <h2>Liste des absences</h2>
+    <h2>{{ __('Liste des absences') }}</h2>
 
     @if ($user->absences->isEmpty())
-        <p>Aucune absence enregistrée pour ce salarié.</p>
+        <p>{{ __('Aucune absence enregistrée pour ce salarié.') }}</p>
     @else
         <table border="1" cellpadding="8">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Date de début</th>
-                    <th>Date de fin</th>
-                    <th>Motif</th>
+                    <th>{{ __('Date de début') }}</th>
+                    <th>{{ __('Date de fin') }}</th>
+                    <th>{{ __('Motif') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +41,6 @@
         </table>
     @endif
 
-    <p><a href="{{ url()->previous() }}">Retour</a></p>
+    <p><a href="{{ url()->previous() }}">{{ __('Retour') }}</a></p>
 </body>
 </html>

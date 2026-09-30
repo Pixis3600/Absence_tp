@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <h2 class="mb-4 text-center">Inscription</h2>
+                    <h2 class="mb-4 text-center">{{ __('Inscription') }}</h2>
 
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -22,7 +22,7 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nom</label>
+                            <label for="name" class="form-label">{{ __('Nom') }}</label>
                             <input
                                 id="name"
                                 type="text"
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="lastname" class="form-label">Prénom</label>
+                            <label for="lastname" class="form-label">{{ __('Prénom') }}</label>
                             <input
                                 id="lastname"
                                 type="text"
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">{{ __('Email') }}</label>
                             <input
                                 id="email"
                                 type="email"
@@ -68,7 +68,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Mot de passe</label>
+                            <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
                             <input
                                 id="password"
                                 type="password"
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                            <label for="password_confirmation" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
                             <input
                                 id="password_confirmation"
                                 type="password"
@@ -93,7 +93,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">
-                            S'inscrire
+                            {{ __('S\'inscrire') }}
                         </button>
                     </form>
                 </div>

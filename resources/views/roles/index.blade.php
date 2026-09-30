@@ -3,8 +3,8 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Gestion des rôles</h2>
-        <a href="{{ route('roles.create') }}" class="btn btn-primary">Ajouter un rôle</a>
+        <h2>{{ __('Gestion des rôles') }}</h2>
+        <a href="{{ route('roles.create') }}" class="btn btn-primary">{{ __('Ajouter un rôle') }}</a>
     </div>
 
     @if(session('success'))
@@ -14,10 +14,10 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Rôle</th>
-                <th>Nombre d'utilisateurs</th>
-                <th>Autorisations</th>
-                <th>Actions</th>
+                <th>{{ __('Rôle') }}</th>
+                <th>{{ __('Nombre d\'utilisateurs') }}</th>
+                <th>{{ __('Autorisations') }}</th>
+                <th>{{ __('Actions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -27,13 +27,13 @@
                     <td>{{ $role->users_count }}</td>
                     <td>
                         @if($role->abilities->isEmpty())
-                            <span class="text-muted">Aucune</span>
+                            <span class="text-muted">{{ __('Aucune') }}</span>
                         @else
                             {{ $role->abilities->pluck('name')->sort()->implode(', ') }}
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('roles.edit', $role) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        <a href="{{ route('roles.edit', $role) }}" class="btn btn-warning btn-sm">{{ __('Modifier') }}</a>
 
                         <form action="{{ route('roles.destroy', $role) }}" method="POST" style="display:inline;">
                             @csrf
@@ -41,16 +41,16 @@
                             <button
                                 type="submit"
                                 class="btn btn-danger btn-sm"
-                                onclick="return confirm('Supprimer ce rôle ? Les utilisateurs perdront ce rôle.')"
+                                onclick="return confirm('{{ __('Supprimer ce rôle ? Les utilisateurs perdront ce rôle.') }}')"
                             >
-                                Supprimer
+                                {{ __('Supprimer') }}
                             </button>
                         </form>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4" class="text-center text-muted">Aucun rôle enregistré.</td>
+                    <td colspan="4" class="text-center text-muted">{{ __('Aucun rôle enregistré.') }}</td>
                 </tr>
             @endforelse
         </tbody>

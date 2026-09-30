@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RoleStoreRequest;
-use App\Http\Requests\RoleUpdateRequest;
+use App\Http\Requests\RoleRequest;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -38,7 +37,7 @@ class RoleController extends Controller
         return view('roles.create', compact('abilities'));
     }
 
-    public function store(RoleStoreRequest $request): RedirectResponse
+    public function store(RoleRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -60,7 +59,7 @@ class RoleController extends Controller
         return view('roles.edit', compact('role', 'abilities'));
     }
 
-    public function update(RoleUpdateRequest $request, Role $role): RedirectResponse
+    public function update(RoleRequest $request, Role $role): RedirectResponse
     {
         $validated = $request->validated();
 

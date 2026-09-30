@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <h2 class="mb-4 text-center">Connexion</h2>
+                    <h2 class="mb-4 text-center">{{ __('Connexion') }}</h2>
 
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -22,7 +22,7 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">{{ __('Email') }}</label>
                             <input
                                 id="email"
                                 type="email"
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Mot de passe</label>
+                            <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
                             <input
                                 id="password"
                                 type="password"
@@ -52,7 +52,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">
-                            Se connecter
+                            {{ __('Se connecter') }}
                         </button>
                     </form>
                 </div>

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Silber\Bouncer\Database\Models;
 
-class RoleUpdateRequest extends FormRequest
+class RoleRequest extends FormRequest
 {
     public function authorize(): bool
     {

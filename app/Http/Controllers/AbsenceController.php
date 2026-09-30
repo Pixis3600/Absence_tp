@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AbsenceStoreRequest;
-use App\Http\Requests\AbsenceUpdateRequest;
+use App\Http\Requests\AbsenceRequest;
+use App\Mail\InfoMail;
 use App\Models\Absence;
 use App\Models\User;
 use App\Repositories\AbsenceRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AbsenceController extends Controller
 {
@@ -84,7 +86,7 @@ class AbsenceController extends Controller
         return view('absences.create', compact('users'));
     }
 
-    public function store(AbsenceStoreRequest $request)
+    public function store(AbsenceRequest $request)
     {
         $validated = $request->validated();
 
@@ -106,7 +108,7 @@ class AbsenceController extends Controller
         return view('absences.edit', compact('absence', 'users'));
     }
 
-    public function update(AbsenceUpdateRequest $request, Absence $absence)
+    public function update(AbsenceRequest $request, Absence $absence)
     {
         $this->authorizeOwnAbsence($absence);
 
@@ -116,7 +118,12 @@ class AbsenceController extends Controller
             $validated['user_id'] = Auth::id();
         }
 
-        $this->repository->update($absence, $validated);
+        $updatedAbsence = $this->repository->update($absence, $validated);
+        $updatedAbsence->loadMissing('user');
+
+        if ($updatedAbsence->user?->email) {
+            Mail::to($updatedAbsence->user)->send(new InfoMail($updatedAbsence));
+        }
 
         return redirect()->route('absences.index')->with('success', 'Absence modifiée avec succès.');
     }
@@ -152,5 +159,23 @@ class AbsenceController extends Controller
         $this->repository->setStatus($absence, 'refuse');
 
         return redirect()->route('absences.index')->with('success', 'L\'absence a été refusée.');
+    }
+
+    public function sendTestMail(Request $request)
+    {
+        if (!$this->canViewAllAbsences()) {
+            abort(403, 'Seuls les administrateurs peuvent envoyer un mail de test.');
+        }
+
+        $validated = $request->validate([
+            'absence_id' => ['required', 'exists:absences,id'],
+            'email' => ['required', 'email'],
+        ]);
+
+        $absence = Absence::with('user')->findOrFail($validated['absence_id']);
+
+        Mail::to($validated['email'])->send(new InfoMail($absence));
+
+        return redirect()->route('absences.index')->with('success', 'Mail de test envoye avec succes.');
     }
 }

@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Silber\Bouncer\Database\Role;
@@ -28,7 +27,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(UserStoreRequest $request)
+    public function store(UserRequest $request)
     {
         $validated = $request->validated();
 
@@ -47,7 +46,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
         $validated = $request->validated();
 
