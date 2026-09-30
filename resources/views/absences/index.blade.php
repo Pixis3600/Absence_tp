@@ -34,14 +34,13 @@
                 <form action="{{ route('absences.test-mail') }}" method="POST" class="row g-2 align-items-end">
                     @csrf
                     <div class="col-md-5">
-                        <label for="absence_id" class="form-label">{{ __('Absence') }}</label>
-                        <select name="absence_id" id="absence_id" class="form-control" required>
+                        <x-select-field name="absence_id" :label="__('Absence')" required>
                             @foreach($absences as $absence)
                                 <option value="{{ $absence->id }}">
                                     #{{ $absence->id }} - {{ $absence->user->name ?? __('Aucun') }} - {{ $absence->motif }}
                                 </option>
                             @endforeach
-                        </select>
+                        </x-select-field>
                     </div>
 
                     <div class="col-md-5">
