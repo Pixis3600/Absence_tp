@@ -16,6 +16,8 @@
 
         <x-input-text name="password" type="password" :label="__('Nouveau mot de passe')" />
 
+        <x-input-text name="password_confirmation" type="password" :label="__('Confirmer le nouveau mot de passe')" />
+
         <x-select-field name="role" :label="__('Rôle')" required>
             @foreach ($roles as $role)
                 <option value="{{ $role }}" @selected(old('role', $user->roles->first()?->name ?? 'salarie') === $role)>

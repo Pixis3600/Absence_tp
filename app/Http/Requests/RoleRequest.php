@@ -28,7 +28,6 @@ class RoleRequest extends FormRequest
             ],
             'abilities' => ['nullable', 'array'],
             'abilities.*' => [Rule::exists(Models::table('abilities'), 'id')],
-            'new_abilities' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

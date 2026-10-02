@@ -53,12 +53,12 @@ class AbsenceController extends Controller
     {
         $status = $absence->status ?? 'en_attente';
 
-        if ($this->canEditAnyAbsence()) {
-            return;
+        if ($status !== 'en_attente') {
+            abort(403, 'Une absence déjà validée ou refusée ne peut plus être modifiée.');
         }
 
-        if ($status !== 'en_attente') {
-            abort(403, 'Une absence déjà validée ou refusée ne peut plus être modifiée par un employé.');
+        if ($this->canEditAnyAbsence()) {
+            return;
         }
 
         if ($absence->user_id !== Auth::id()) {

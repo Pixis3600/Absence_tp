@@ -80,6 +80,8 @@
             <tbody>
                 @foreach($absences as $absence)
                     @php
+                        $status = $absence->status ?? 'en_attente';
+
                         $statusClass = match($absence->status ?? 'en_attente') {
                             'accepte' => 'success',
                             'refuse' => 'danger',
@@ -93,6 +95,7 @@
                         };
 
                         $isOwner = Auth::check() && $absence->user_id === Auth::id();
+                        $canEditAbsence = $status === 'en_attente' && ($canManageAllAbsences || $isOwner);
                     @endphp
                     <tr>
                         <td>{{ $absence->user->name ?? __('Aucun') }}</td>
@@ -119,11 +122,15 @@
                                 <span class="text-muted">{{ __('Traitée') }}</span>
                             @endif
 
-                            @if($canManageAllAbsences || $isOwner)
+                            @if($canEditAbsence)
                                 <a href="{{ route('absences.edit', $absence->id) }}" class="btn btn-warning btn-sm ms-1">
                                     {{ __('Modifier') }}
                                 </a>
+                            @elseif($canManageAllAbsences || $isOwner)
+                                <span class="text-muted ms-1">{{ __('Non modifiable') }}</span>
+                            @endif
 
+                            @if($canManageAllAbsences || $isOwner)
                                 <form action="{{ route('absences.destroy', $absence->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')

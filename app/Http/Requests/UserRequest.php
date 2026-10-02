@@ -16,12 +16,15 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('user')?->id;
+        $passwordRules = $this->isMethod('post')
+            ? ['required', 'string', 'min:6']
+            : ['nullable', 'string', 'min:6', 'confirmed'];
 
         return [
             'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'lastname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
-            'password' => [$this->isMethod('post') ? 'required' : 'nullable', 'string', 'min:6'],
+            'password' => $passwordRules,
             'role' => ['required', Rule::exists(Models::table('roles'), 'name')],
         ];
     }
@@ -38,6 +41,7 @@ class UserRequest extends FormRequest
             'email.unique' => __('Cet email est déjà utilisé.'),
             'password.required' => __('Le mot de passe est obligatoire.'),
             'password.min' => __('Le mot de passe doit contenir au moins 6 caractères.'),
+            'password.confirmed' => __('La confirmation du mot de passe ne correspond pas.'),
             'role.required' => __('Le rôle est obligatoire.'),
             'role.in' => __('Le rôle sélectionné est invalide.'),
         ];

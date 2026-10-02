@@ -46,21 +46,6 @@
             @enderror
         </div>
 
-        <div class="mb-3">
-            <label for="new_abilities">{{ __('Ajouter de nouvelles autorisations') }}</label>
-            <input
-                type="text"
-                name="new_abilities"
-                class="form-control"
-                value="{{ old('new_abilities') }}"
-                placeholder="ex: role-manage, report-export"
-            >
-            <small class="text-muted">{{ __('Sépare les noms par des virgules.') }}</small>
-            @error('new_abilities')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-
         <button type="submit" class="btn btn-primary">{{ __('Enregistrer') }}</button>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">{{ __('Annuler') }}</a>
     </form>
